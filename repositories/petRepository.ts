@@ -1,15 +1,16 @@
 import { Pet } from '../types';
 import axios from 'axios';
-import { server_url } from '../utils/const';
+import {supabase} from '../utils/supabase';
 
 
-const url = server_url + '/pets'
+// const url = server_url + '/pets'
 
 export const petRepository = {
   async getPets(): Promise<Pet[]> {
     // Simulate API call delay
 
-    const response = await axios.get(url)
+    const response = await supabase.from("pets").select()
+    console.log("Supabase RESPONSE")
     console.log(response)
     return response.data;
   },

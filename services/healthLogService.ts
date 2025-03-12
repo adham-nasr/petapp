@@ -13,11 +13,8 @@ export const healthLogService = {
   },
 
   async createBodyConditionLog(bodyConditionLog: Omit<BodyConditionLog, 'id'>): Promise<BodyConditionLog> {
-    const newBodyConditionLog: BodyConditionLog = {
-      ...bodyConditionLog,
-      id: Math.random().toString(36).substr(2, 9), // Generate random ID
-    };
-    const createdBodyConditionLog = await healthLogRepository.createBodyConditionLog(newBodyConditionLog);
+   
+    const createdBodyConditionLog = await healthLogRepository.createBodyConditionLog(bodyConditionLog);
     return createdBodyConditionLog;
   },
 

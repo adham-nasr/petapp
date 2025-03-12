@@ -1,15 +1,17 @@
 import { WeightLog } from '../types';
 import axios from 'axios';
-import { server_url } from '../utils/const';
+// import { server_url } from '../utils/const';
 
+import { supabase } from '../utils/supabase';
+// const url = server_url+'/logs_weight'
 
-const url = server_url+'/logs_weight'
+const table_name = 'weight_logs'
 
 export const weightLogRepository = {
   async getWeightLogs(): Promise<WeightLog[]> {
     // Simulate API call delay
 
-    const response = await axios.get(url)
+    const response = await supabase.from("weight_logs").select()
     console.log(response)
     return response.data||[];
   },
@@ -21,11 +23,11 @@ export const weightLogRepository = {
     return weightLog || null;
   },
 
-  async createWeightLog(weightLog: WeightLog): Promise<WeightLog> {
-    // Simulate API call delay
-    const newWeightLog:WeightLog = (await axios.post(url,weightLog)).data
+  async createWeightLog(weightLog: Omit<WeightLog,'id'>): Promise<WeightLog> {
 
-    return newWeightLog;
+    const response = await supabase.from('weight_logs').insert(weightLog).select().single();
+    return response.data||{}
+
   },
 
   async updateWeightLog(id: string, updates: Partial<WeightLog>): Promise<WeightLog> {

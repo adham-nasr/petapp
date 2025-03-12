@@ -41,12 +41,8 @@ export const petService = {
 
   async createPet(pet: Omit<Pet, 'id' | 'created_at'>): Promise<Pet> {
     // Simulate API call delay
-    const newPet: Pet = {
-      ...pet,
-      id: Math.random().toString(36).substr(2, 9),
-      created_at: new Date().toISOString()
-    };
-    const created_pet = await petRepository.createPet(newPet);
+  
+    const created_pet = await petRepository.createPet(pet);
     return created_pet;
   },
 

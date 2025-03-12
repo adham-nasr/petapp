@@ -6,6 +6,7 @@ import Logs from "../layouts/Logs"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { healthLogService } from '@/services/healthLogService';
 import FormModal from '@/components/FormModal';
+import { petService } from '../services/petService';
 
 const HealthLogsScreen = () => { 
   
@@ -18,6 +19,11 @@ const HealthLogsScreen = () => {
     queryFn : healthLogService.getBodyConditionLogs,
     staleTime : Infinity
   })
+  const petQuery = useQuery({
+        queryKey: ["pet"],
+        queryFn : petService.getPets,
+        staleTime : Infinity
+      })
   
   const addHealthLog = useMutation({
     mutationFn: healthLogService.createBodyConditionLog,
@@ -33,7 +39,9 @@ const HealthLogsScreen = () => {
 
   const postHandler = async(data) => 
   {
-      const response = await addHealthLog.mutate({date:data.date , body_condition:data.textField , pet_id:"123"})
+      const date = (new Date(data.date)).toISOString()
+
+      const response = await addHealthLog.mutate({date:date , body_condition:data.textField , pet_id:petQuery.data[0].id})
       console.log('RESPONSE ^VV^V^V^^V^V^V^^V^V^^V^V' )
       console.log(response)
   }
@@ -46,6 +54,8 @@ const HealthLogsScreen = () => {
   if (healthLogQuery.isError) {
     return <Text>{JSON.stringify(healthLogQuery.error)}</Text>;
   }
+   if(!petQuery.data || !petQuery.data[0])
+      return <Text>Pet Data doesn't Exist</Text>
 
   // const [pet, setPet] = useState<Pet | null>(null);
   // const [loading, setLoading] = useState(true);

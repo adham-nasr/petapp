@@ -1,13 +1,14 @@
 import { VetVisitLog } from '../types';
 import axios from 'axios';
-import { server_url } from '../utils/const';
+// import { server_url } from '../utils/const';
+import { supabase } from '../utils/supabase';
 
 
-const url = server_url+'/logs_vet_visits'
+// const url = server_url+'/logs_vet_visits'
 
 export const visitLogRepository = {
   async getVetVisitLogs(): Promise<VetVisitLog[]> {
-    const response = await axios.get(url);
+    const response = await supabase.from("vet_visit_logs").select()
     return response.data||[];
   },
 
@@ -17,9 +18,10 @@ export const visitLogRepository = {
     return vetVisitLog || null;
   },
 
-  async createVetVisitLog(vetVisitLog: VetVisitLog): Promise<VetVisitLog> {
-    const newVetVisitLog: VetVisitLog = (await axios.post(url, vetVisitLog)).data;
-    return newVetVisitLog;
+  async createVetVisitLog(vetVisitLog: Omit<VetVisitLog,'id'>): Promise<VetVisitLog> {
+    
+    const response = await supabase.from('vet_visit_logs').insert(vetVisitLog).select().single();
+    return response.data||{}
   },
 
   async updateVetVisitLog(id: string, updates: Partial<VetVisitLog>): Promise<VetVisitLog> {

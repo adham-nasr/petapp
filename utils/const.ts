@@ -1,4 +1,6 @@
 import {Pet} from "../types"
+import { createClient } from '@supabase/supabase-js'
+
 
 export const globalMockPet: Pet = {
   id: '1',
@@ -24,4 +26,10 @@ export const globalMockPet: Pet = {
   ],
 };
 
-export const server_url = "http://192.168.1.8:8080"
+// export const server_url = "http://192.168.1.8:8080"
+
+// const supabaseUrl = process.env.SUPABASE_URL
+// const supabaseKey = process.env.SUPABASE_ANON_KEY
+// const supabase = createClient(supabaseUrl, supabaseKey)
+
+// export default supabase

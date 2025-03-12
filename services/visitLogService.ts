@@ -13,11 +13,8 @@ export const visitLogService = {
   },
 
   async createVetVisitLog(vetVisitLog: Omit<VetVisitLog, 'id'>): Promise<VetVisitLog> {
-    const newVetVisitLog: VetVisitLog = {
-      ...vetVisitLog,
-      id: Math.random().toString(36).substr(2, 9), // Generate random ID
-    };
-    const createdVetVisitLog = await visitLogRepository.createVetVisitLog(newVetVisitLog);
+
+    const createdVetVisitLog = await visitLogRepository.createVetVisitLog(vetVisitLog);
     return createdVetVisitLog;
   },
 

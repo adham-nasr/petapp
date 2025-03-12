@@ -5,6 +5,7 @@ import { globalMockPet } from '../utils/const'
 import Logs from "../layouts/Logs"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { weightLogService } from '../services/weightLogService';
+import { petService } from '../services/petService';
 import FormModal from '../components/FormModal';
 
 const WeightLogsScreen = () => { 
@@ -18,6 +19,22 @@ const WeightLogsScreen = () => {
     queryFn : weightLogService.getWeightLogs,
     staleTime : Infinity
   })
+  const petQuery = useQuery({
+      queryKey: ["pet"],
+      queryFn : petService.getPets,
+      staleTime : Infinity
+    })
+
+  if (weightLogQuery.isLoading) {
+    return <Text>NONE</Text>;
+  }
+  console.log(weightLogQuery.error)
+  if (weightLogQuery.isError) {
+    return <Text>{JSON.stringify(weightLogQuery.error)}</Text>;
+  }
+
+  if(!petQuery.data || !petQuery.data[0])
+    return <Text>Pet Data doesn't Exist</Text>
   
   const addWeightLog = useMutation({
     mutationFn: weightLogService.createWeightLog,
@@ -33,17 +50,10 @@ const WeightLogsScreen = () => {
 
   const postHandler = async(data) => 
   {
-    const response = await addWeightLog.mutate({date:data.date , weight:data.textField , pet_id:"123"})
+    const date = (new Date(data.date)).toISOString()
+    const response = await addWeightLog.mutate({date:date, weight:data.textField , pet_id:petQuery.data[0].id})
     console.log('RESPONSE ^VV^V^V^^V^V^V^^V^V^^V^V' )
     console.log(response)
-  }
-
-  if (weightLogQuery.isLoading) {
-    return <Text>NONE</Text>;
-  }
-  console.log(weightLogQuery.error)
-  if (weightLogQuery.isError) {
-    return <Text>{JSON.stringify(weightLogQuery.error)}</Text>;
   }
 
   const inputProperties = {

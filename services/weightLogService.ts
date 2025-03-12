@@ -16,23 +16,17 @@ export const weightLogService = {
   },
 
   async createWeightLog(weightLog: Omit<WeightLog, 'id'>): Promise<WeightLog> {
-    // Simulate API call delay
-    const newWeightLog: WeightLog = {
-      ...weightLog,
-      id: Math.random().toString(36).substr(2, 9),
-    };
-    const created_weightLog = await weightLogRepository.createWeightLog(newWeightLog);
+    
+    const created_weightLog = await weightLogRepository.createWeightLog(weightLog);
     return created_weightLog;
   },
 
   async updateWeightLog(id: string, updates: Partial<WeightLog>): Promise<WeightLog> {
-    // Simulate API call delay
     const updated_weightLog = await weightLogRepository.updateWeightLog(id,updates);
     return updated_weightLog;
   },
 
   async deletePet(id: string): Promise<void> {
-    // Simulate API call delay
     await weightLogRepository.deleteWeightLog(id);
 
     // if (index === -1) {

@@ -1,13 +1,14 @@
 import { BodyConditionLog } from '../types';
 import axios from 'axios';
-import { server_url } from '../utils/const';
+// import { server_url } from '../utils/const';
+import { supabase } from '../utils/supabase';
 
 
-const url = server_url+'/logs_bodycondition'
+// const url = server_url+'/logs_bodycondition'
 
 export const healthLogRepository = {
   async getBodyConditionLogs(): Promise<BodyConditionLog[]> {
-    const response = await axios.get(url);
+    const response = await supabase.from("body_condition_logs").select()
     return response.data||[];
   },
 
@@ -17,9 +18,11 @@ export const healthLogRepository = {
     return bodyConditionLog || null;
   },
 
-  async createBodyConditionLog(bodyConditionLog: BodyConditionLog): Promise<BodyConditionLog> {
-    const newBodyConditionLog: BodyConditionLog = (await axios.post(url, bodyConditionLog)).data;
-    return newBodyConditionLog;
+  async createBodyConditionLog(bodyConditionLog: Omit<BodyConditionLog,'id'>): Promise<BodyConditionLog> {
+    
+    const response = await supabase.from('body_condition_logs').insert(bodyConditionLog).select().single();
+    return response.data||{}
+
   },
 
   async updateBodyConditionLog(id: string, updates: Partial<BodyConditionLog>): Promise<BodyConditionLog> {
