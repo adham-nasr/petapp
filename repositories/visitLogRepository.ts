@@ -1,10 +1,7 @@
 import { VetVisitLog } from '../types';
 import axios from 'axios';
-// import { server_url } from '../utils/const';
 import { supabase } from '../utils/supabase';
 
-
-// const url = server_url+'/logs_vet_visits'
 
 export const visitLogRepository = {
   async getVetVisitLogs(): Promise<VetVisitLog[]> {

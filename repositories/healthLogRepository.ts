@@ -1,6 +1,5 @@
 import { BodyConditionLog } from '../types';
 import axios from 'axios';
-// import { server_url } from '../utils/const';
 import { supabase } from '../utils/supabase';
 
 

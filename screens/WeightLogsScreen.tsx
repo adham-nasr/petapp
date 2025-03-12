@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {View,Text,StyleSheet,ActivityIndicator, Button} from 'react-native';
 import { Pet, BodyConditionLog, WeightLog } from '../types';
-import { globalMockPet } from '../utils/const'
 import Logs from "../layouts/Logs"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { weightLogService } from '../services/weightLogService';
@@ -52,8 +51,7 @@ const WeightLogsScreen = () => {
   {
     const date = (new Date(data.date)).toISOString()
     const response = await addWeightLog.mutate({date:date, weight:data.textField , pet_id:petQuery.data[0].id})
-    console.log('RESPONSE ^VV^V^V^^V^V^V^^V^V^^V^V' )
-    console.log(response)
+
   }
 
   const inputProperties = {

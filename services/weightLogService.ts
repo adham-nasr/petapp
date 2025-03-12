@@ -3,13 +3,13 @@ import { weightLogRepository } from '../repositories/weightLogRepository';
 
 export const weightLogService = {
   async getWeightLogs(): Promise<WeightLog[]> {
-    // Simulate API call delay
+
     const weightLogs = await weightLogRepository.getWeightLogs();
     return weightLogs;
   },
 
   async getWeightLogById(id: string): Promise<WeightLog | null> {
-    // Simulate API call delay
+
     await new Promise(resolve => setTimeout(resolve, 1000));
     const weightLog = await weightLogRepository.getWeightLogById(id);
     return weightLog;
@@ -29,8 +29,5 @@ export const weightLogService = {
   async deletePet(id: string): Promise<void> {
     await weightLogRepository.deleteWeightLog(id);
 
-    // if (index === -1) {
-    //   throw new Error('Pet not found');
-    // }
   }
 }; 

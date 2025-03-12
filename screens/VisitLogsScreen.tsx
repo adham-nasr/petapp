@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View,Text,StyleSheet, Button} from 'react-native';
 import { Pet, VetVisitLog } from '../types';
-import { globalMockPet } from '../utils/const'
 import Logs from "../layouts/Logs"
 import { visitLogService } from '../services/visitLogService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -41,8 +40,7 @@ const VisitLogsScreen = () => {
   {
       const date = (new Date(data.date)).toISOString()
       const response = await addVisitLog.mutate({date:date , notes:data.textField , pet_id:petQuery.data[0].id})
-      console.log('RESPONSE ^VV^V^V^^V^V^V^^V^V^^V^V' )
-      console.log(response)
+
   }
   
 

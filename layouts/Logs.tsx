@@ -8,9 +8,6 @@ const Logs = ({ data,logType,keyName,children }) => {
     const logName = `${logType} Log`
     const columnName = `${logType}`
 
-    // data = [...data  , ...data , ...data , ...data , ...data , ...data, ...data, ...data, ...data, ...data, ...data , ...data, ...data, ...data, ...data, ...data]
-
-
   return (
     <View style={styles.container}>
       <View style= {styles.dataView}>

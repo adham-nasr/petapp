@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {View,Text,StyleSheet,ScrollView,ActivityIndicator, Button} from 'react-native';
 import { Pet, BodyConditionLog, WeightLog,VetVisitLog } from '../types';
-import { globalMockPet } from '../utils/const'
 import Logs from "../layouts/Logs"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { healthLogService } from '@/services/healthLogService';
@@ -40,10 +39,8 @@ const HealthLogsScreen = () => {
   const postHandler = async(data) => 
   {
       const date = (new Date(data.date)).toISOString()
-
       const response = await addHealthLog.mutate({date:date , body_condition:data.textField , pet_id:petQuery.data[0].id})
-      console.log('RESPONSE ^VV^V^V^^V^V^V^^V^V^^V^V' )
-      console.log(response)
+
   }
   
 
@@ -56,29 +53,6 @@ const HealthLogsScreen = () => {
   }
    if(!petQuery.data || !petQuery.data[0])
       return <Text>Pet Data doesn't Exist</Text>
-
-  // const [pet, setPet] = useState<Pet | null>(null);
-  // const [loading, setLoading] = useState(true);
-  
-
-  // useEffect(() => {
-  //     const fetchPet = async () => {
-  //       try {
-  //         // Simulate network delay
-  //         await new Promise(resolve => setTimeout(resolve, 1000));
-  //         setPet(globalMockPet);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     };
-  
-  //     fetchPet();
-  //   }, [globalMockPet]);
-
-
-  // if (loading) {
-  //   return <Text>NONE</Text>;
-  // }
 
   const inputProperties = {
     rules:{

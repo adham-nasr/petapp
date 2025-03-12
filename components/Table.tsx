@@ -17,12 +17,6 @@ const Table = ({ data , keyName , logName , columnName }) => {
                     <Text style={styles.cell}>{item[keyName]}</Text>
                 </View>
         }/>
-        // data.map((log, index) => (
-        //   <View key={index} style={styles.row}>
-        //     <Text style={styles.cell}>{new Date(log.date).toLocaleDateString()}</Text>
-        //     <Text style={styles.cell}>{log[keyName]}</Text>
-        //   </View>
-        // ))
       ) : (
         <Text style={styles.noData}>No logs available</Text>
       )}

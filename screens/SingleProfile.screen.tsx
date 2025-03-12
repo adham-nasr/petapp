@@ -9,7 +9,6 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pet, BodyConditionLog, WeightLog } from '../types';
 import  WeightLogsScreen  from './WeightLogsScreen'
-import { globalMockPet } from '../utils/const';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { petService } from "../services/petService"
 import { weightLogService } from "../services/weightLogService"
@@ -85,12 +84,8 @@ const HealthStatus = ({ pet }: { pet: Pet }) => (
   </View>
 );
 
-export const SingleProfileScreen = ({ route }) => {
-  console.log(route)
-  // const { id } = !route?.params?.id ? route.params : 0;
-  const id = 0 // FIX WITH ORIGINAL   const { id } = route.params
-  // const [pet, setPet] = useState<Pet | null>(null);
-  // const [loading, setLoading] = useState(true);
+export const SingleProfileScreen = () => {
+
   const [thisMonthLogs, setThisMonthLogs] = useState<{
     latestBodyConditionLog: BodyConditionLog | null;
     latestWeightLog: WeightLog | null;
@@ -130,11 +125,6 @@ export const SingleProfileScreen = ({ route }) => {
 
   if(queriesService.hasErrors(queries))
   {
-      console.log("ERRoRRS *(@@(@!#!@#!@#")
-      console.log(petQuery.error)
-      console.log(weightLogQuery.error)
-      console.log(visitLogQuery.error)
-      console.log(healthLogQuery.error)
       return(
       <View style={styles.container}>
         <Text>Pet not found Eroor</Text>
@@ -152,28 +142,6 @@ export const SingleProfileScreen = ({ route }) => {
     "logs_bodycondition":healthLogQuery.data || [],
     "logs_vet_visits":visitLogQuery.data || []
   }
-
-  // useEffect(() => {
-  //   const fetchPet = async () => {
-  //     try {
-  //       // Simulate network delay
-  //       await new Promise(resolve => setTimeout(resolve, 1000));
-  //       setPet(mockPet);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchPet();
-  // }, [id]);
-;
-
-  // if (loading) {
-  //   return <ActivityIndicator style={styles.loader} />;
-  // }
-  // if (pet) {
-  //     setThisMonthLogs(getThisMonthLogs(pet.logs_bodycondition, pet.logs_weight));
-  //   }
 
   if (!pet) {
     return (
@@ -198,11 +166,7 @@ export const SingleProfileScreen = ({ route }) => {
       </View>
 
       <HealthStatus pet={pet} />
-      
-      {/* <WeightLogsScreen 
-        weightLogs={pet.logs_weight} 
-        bodyConditionLogs={pet.logs_bodycondition} 
-      /> */}
+
     </ScrollView>
   );
 };
