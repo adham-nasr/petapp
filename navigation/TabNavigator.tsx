@@ -17,12 +17,41 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator
+      <Tab.Navigator 
+  
       >
-        <Tab.Screen name="Home" component={SingleProfileScreen} />
-        <Tab.Screen name="Weight History" component={WeightLogsScreen} />
-        <Tab.Screen name="Health History" component={HealthLogsScreen} />
-        <Tab.Screen name="VetVisits History" component={VisitLogsScreen} />
+        <Tab.Screen name="Home" component={SingleProfileScreen} options={{
+        tabBarIcon: ({ focused, color, size }) => (
+          <Ionicons
+            name={focused ? 'home' : 'home-outline'}
+            size={size}
+            color={color}
+          />),
+        }}/>
+        <Tab.Screen name="Weight History" component={WeightLogsScreen} options={{
+        tabBarIcon: ({ focused, color, size }) => (
+          <Ionicons
+            name={focused ? 'analytics' : 'analytics-outline'}
+            size={size}
+            color={"crimson"}
+          />),
+        }}/>
+        <Tab.Screen name="Health History" component={HealthLogsScreen} options={{
+        tabBarIcon: ({ focused, color, size }) => (
+          <Ionicons
+            name={focused ? 'heart' : 'heart-outline'}
+            size={size}
+            color="#40DD40"
+          />),
+        }}/>
+        <Tab.Screen name="VetVisits History" component={VisitLogsScreen} options={{
+        tabBarIcon: ({ focused, color, size }) => (
+          <Ionicons
+            name={focused ? 'car' : 'car-outline'}
+            size={size}
+            color={"black"}
+          />),
+        }}/>
 
       </Tab.Navigator>
     </NavigationContainer>

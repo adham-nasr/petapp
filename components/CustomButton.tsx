@@ -1,25 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
-const TableHeader = ({ headerName,columnName }) => {
+const CustomButton = ({ title , pressHandler , color='#2196F3' }) => {
   return (
-    <>
-      <Text style={styles.header}>{columnName}</Text>
-      <View style={styles.row}>
-        <Text style={styles.columnHeader}>Date</Text>
-        <Text style={styles.columnHeader}>{headerName}</Text>
-      </View>
-    </>
+    <View style={styles.buttonView}>
+        <Button title={title} onPress={()=>{pressHandler()} } />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+    buttonView:{
+        width:120,
+        height:50,
+        marginHorizontal:"auto",
+      },
   container: {
     marginTop: 20,
     padding: 10,
     backgroundColor: '#fff',
     borderRadius: 8,
     elevation: 3,
+    flex:1,
   },
   header: {
     fontSize: 18,
@@ -50,4 +52,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TableHeader;
+export default CustomButton;

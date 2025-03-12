@@ -3,7 +3,7 @@ import axios from 'axios';
 import { server_url } from '../utils/const';
 
 
-const url = server_url+'/pets'
+const url = server_url + '/pets'
 
 export const petRepository = {
   async getPets(): Promise<Pet[]> {

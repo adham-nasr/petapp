@@ -5,8 +5,11 @@ import { globalMockPet } from '../utils/const'
 import Logs from "../layouts/Logs"
 import { visitLogService } from '../services/visitLogService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import FormModal from '@/components/FormModal';
 
 const VisitLogsScreen = () => { 
+  const [modalVisible, setModalVisible] = useState(false);
+  
 
   const queryClient = useQueryClient()
 
@@ -28,6 +31,14 @@ const VisitLogsScreen = () => {
 
   })
 
+  const postHandler = async(data) => 
+  {
+      const response = await addVisitLog.mutate({date:data.date , notes:data.textField , pet_id:"123"})
+      console.log('RESPONSE ^VV^V^V^^V^V^V^^V^V^^V^V' )
+      console.log(response)
+  }
+  
+
   if (visitLogQuery.isLoading) {
     return <Text>NONE</Text>;
   }
@@ -35,18 +46,28 @@ const VisitLogsScreen = () => {
   if (visitLogQuery.isError) {
     return <Text>{JSON.stringify(visitLogQuery.error)}</Text>;
   }
+
+  const inputProperties = {
+    rules:{
+      required:'Notes field is required',
+      maxLength:{value:300, message:'text should be less than 300 charecters long'},
+    },
+    label:"Notes"
+  }
   
   return(
-    <View>
-      <Logs keyName="notes" data={visitLogQuery.data} logType="Vet Visit"/>
-      <Button title="asd" onPress={()=>{  addVisitLog.mutate({date:"2024-01-25T10:00:00Z",notes:"Cancel",pet_id:"21"})}} />
+    <View style={styles.container}>
+      <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties} postHandler={postHandler}/>
+      <Logs keyName="notes" data={visitLogQuery.data} logType="Vet Visit">
+        <Button title='Add' onPress={()=>{setModalVisible(true)}} />
+      </Logs>
     </View>
   )
 };
 
 const styles = StyleSheet.create({
-    table: {
-      marginTop: 16,
+    container:{
+      flex:1,
     },
     tableHeader: {
       fontSize: 18,

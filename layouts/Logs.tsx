@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Children } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { WeightLog } from '../types';
 import Table from '../components/Table';
 
-const Logs = ({ data,logType,keyName }) => {
+const Logs = ({ data,logType,keyName,children }) => {
 
     const logName = `${logType} Log`
     const columnName = `${logType}`
@@ -12,18 +12,36 @@ const Logs = ({ data,logType,keyName }) => {
 
 
   return (
-    <Table data={data} logName={logName} columnName={columnName} keyName={keyName} />
+    <View style={styles.container}>
+      <View style= {styles.dataView}>
+        <Table data={data} logName={logName} columnName={columnName} keyName={keyName} />
+      </View>
+      <View style={styles.buttonView}>
+        {children}
+      </View>
+    </View>
   )
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
     padding: 10,
     backgroundColor: '#fff',
     borderRadius: 8,
     elevation: 3,
+    flex:1,
   },
+  dataView:{
+    flex:10,
+    marginBottom:30,
+  },
+  buttonView:{
+    flex:1,
+    width:100,
+    height:50,
+    marginHorizontal:"auto",
+  },
+
   header: {
     fontSize: 18,
     fontWeight: 'bold',

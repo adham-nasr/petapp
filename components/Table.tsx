@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 8,
     elevation: 3,
+    flex:1,
   },
   header: {
     fontSize: 18,

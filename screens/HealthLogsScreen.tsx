@@ -5,8 +5,11 @@ import { globalMockPet } from '../utils/const'
 import Logs from "../layouts/Logs"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { healthLogService } from '@/services/healthLogService';
+import FormModal from '@/components/FormModal';
 
 const HealthLogsScreen = () => { 
+  
+  const [modalVisible, setModalVisible] = useState(false);
 
   const queryClient = useQueryClient()
 
@@ -16,7 +19,7 @@ const HealthLogsScreen = () => {
     staleTime : Infinity
   })
   
-  const addVisitLog = useMutation({
+  const addHealthLog = useMutation({
     mutationFn: healthLogService.createBodyConditionLog,
     onSuccess: (healthLog)=>{ console.log(healthLog); queryClient.setQueryData(["healthLog"],(data:BodyConditionLog[]) =>
       data
@@ -27,6 +30,14 @@ const HealthLogsScreen = () => {
         : healthLog)}
 
   })
+
+  const postHandler = async(data) => 
+  {
+      const response = await addHealthLog.mutate({date:data.date , body_condition:data.textField , pet_id:"123"})
+      console.log('RESPONSE ^VV^V^V^^V^V^V^^V^V^^V^V' )
+      console.log(response)
+  }
+  
 
   if (healthLogQuery.isLoading) {
     return <Text>NONE</Text>;
@@ -58,17 +69,27 @@ const HealthLogsScreen = () => {
   // if (loading) {
   //   return <Text>NONE</Text>;
   // }
+
+  const inputProperties = {
+    rules:{
+      required:'health field is required',
+      maxLength:{value:30, message:'text should be less than 30 charecters long'},
+    },
+    label:"Health"
+  }
   
   return(
-    <View>
-      <Logs keyName="body_condition" data={healthLogQuery.data} logType="Health"/>
-      <Button title="asd" onPress={()=>{  addVisitLog.mutate({date:"2024-01-25T10:00:00Z",body_condition:"2",pet_id:"21"})}} />
+    <View style={styles.container}>
+      <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties = {inputProperties} postHandler={postHandler}/>
+      <Logs keyName="body_condition" data={healthLogQuery.data} logType="Health">
+        <Button title='Add' onPress={()=>{setModalVisible(true)}} />
+      </Logs>
     </View>
 ) };
 
 const styles = StyleSheet.create({
-    table: {
-      marginTop: 16,
+    container:{
+      flex:1,
     },
     tableHeader: {
       fontSize: 18,
