@@ -1,29 +1,9 @@
 import { Pet } from '../types';
 import axios from 'axios';
+import { server_url } from '../utils/const';
 
-// Mock data for development
-const mockPets: Pet[] = [
-  {
-    id: '1',
-    name: 'Max',
-    species: 'Dog',
-    breed: 'Golden Retriever',
-    age: 3,
-    created_at: new Date().toISOString(),
-    owner_id: '123'
-  },
-  {
-    id: '2',
-    name: 'Luna',
-    species: 'Cat',
-    breed: 'Siamese',
-    age: 2,
-    created_at: new Date().toISOString(),
-    owner_id: '123'
-  }
-];
 
-const url = 'http://127.0.0.1:8080/pets'
+const url = server_url+'/pets'
 
 export const petRepository = {
   async getPets(): Promise<Pet[]> {

@@ -1,36 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import {View,Text,StyleSheet,ActivityIndicator} from 'react-native';
+import {View,Text,StyleSheet,ActivityIndicator, Button} from 'react-native';
 import { Pet, BodyConditionLog, WeightLog } from '../types';
-import { globalMockPet } from '../const'
+import { globalMockPet } from '../utils/const'
 import Logs from "../layouts/Logs"
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { weightLogService } from '../services/weightLogService';
 
 const WeightLogsScreen = () => { 
 
-  const [pet, setPet] = useState<Pet | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient()
+
+  const weightLogQuery = useQuery({
+    queryKey: ["weightLog"],
+    queryFn : weightLogService.getWeightLogs,
+    staleTime : Infinity
+  })
   
+  const addWeightLog = useMutation({
+    mutationFn: weightLogService.createWeightLog,
+    onSuccess: (weightLog)=>{ console.log(weightLog); queryClient.setQueryData(["weightLog"],(data:WeightLog[]) =>
+      data
+        ? [            
+            ...data,
+            weightLog,
+          ]
+        : weightLog)}
 
-  useEffect(() => {
-      const fetchPet = async () => {
-        try {
-          // Simulate network delay
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          setPet(globalMockPet);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchPet();
-    }, [globalMockPet]);
+  })
 
-
-  if (loading) {
+  if (weightLogQuery.isLoading) {
     return <Text>NONE</Text>;
+  }
+  console.log(weightLogQuery.error)
+  if (weightLogQuery.isError) {
+    return <Text>{JSON.stringify(weightLogQuery.error)}</Text>;
   }
   
   return(
-    <Logs keyName="weight" data={pet?.logs_weight} logType="Weight"/>
+    <View>
+      <Logs keyName="weight" data={weightLogQuery.data} logType="Weight"/>
+      <Button title="asd" onPress={()=>{  addWeightLog.mutate({date:"2024-01-25T10:00:00Z",weight:"12.2",pet_id:"21"})}} />
+    </View>
+
 ) };
 
 const styles = StyleSheet.create({

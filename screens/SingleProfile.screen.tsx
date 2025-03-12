@@ -9,10 +9,13 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pet, BodyConditionLog, WeightLog } from '../types';
 import  WeightLogsScreen  from './WeightLogsScreen'
-import { globalMockPet } from '../const';
+import { globalMockPet } from '../utils/const';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { petService } from "../services/petService"
 import { weightLogService } from "../services/weightLogService"
+import { visitLogService } from '../services/visitLogService';
+import { healthLogService } from '../services/healthLogService';
+import { queriesService } from '../services/queriesService';
 
 
 
@@ -23,7 +26,7 @@ type RootStackParamList = {
 type Props = NativeStackScreenProps<RootStackParamList, 'SingleProfile'>;
 
 // Mock data for development
-const mockPet: Pet = globalMockPet 
+// const mockPet: Pet = globalMockPet 
 
 function getThisMonthLogs(logs_bodycondition: BodyConditionLog[], logs_weight: WeightLog[]) {
   const currentMonth = new Date().getMonth();
@@ -86,8 +89,8 @@ export const SingleProfileScreen = ({ route }) => {
   console.log(route)
   // const { id } = !route?.params?.id ? route.params : 0;
   const id = 0 // FIX WITH ORIGINAL   const { id } = route.params
-  const [pet, setPet] = useState<Pet | null>(null);
-  const [loading, setLoading] = useState(true);
+  // const [pet, setPet] = useState<Pet | null>(null);
+  // const [loading, setLoading] = useState(true);
   const [thisMonthLogs, setThisMonthLogs] = useState<{
     latestBodyConditionLog: BodyConditionLog | null;
     latestWeightLog: WeightLog | null;
@@ -96,37 +99,81 @@ export const SingleProfileScreen = ({ route }) => {
     latestWeightLog: null,
   });
 
-  // const PetQuery = useQuery({
-  //   queryKey: ["pet"],
-  //   queryFn : petService.getPets,
-  //   staleTime : Infinity
-  // })
+  const petQuery = useQuery({
+    queryKey: ["pet"],
+    queryFn : petService.getPets,
+    staleTime : Infinity
+  })
+  const weightLogQuery = useQuery({
+    queryKey: ["weightLog"],
+    queryFn : weightLogService.getWeightLogs,
+    staleTime : Infinity
+  })
+  const visitLogQuery = useQuery({
+    queryKey: ["visitLog"],
+    queryFn : visitLogService.getVetVisitLogs,
+    staleTime : Infinity
+  })
+  const healthLogQuery = useQuery({
+    queryKey: ["healthLog"],
+    queryFn : healthLogService.getBodyConditionLogs,
+    staleTime : Infinity
+  })
 
-
-
-  useEffect(() => {
-    const fetchPet = async () => {
-      try {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setPet(mockPet);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPet();
-  }, [id]);
+  const queries = [petQuery , weightLogQuery , visitLogQuery , healthLogQuery]
 
   useEffect(() => {
     if (pet) {
       setThisMonthLogs(getThisMonthLogs(pet.logs_bodycondition, pet.logs_weight));
     }
-  }, [pet]);
+  }, [petQuery.data])
 
-  if (loading) {
-    return <ActivityIndicator style={styles.loader} />;
+  if(queriesService.hasErrors(queries))
+  {
+      console.log("ERRoRRS *(@@(@!#!@#!@#")
+      console.log(petQuery.error)
+      console.log(weightLogQuery.error)
+      console.log(visitLogQuery.error)
+      console.log(healthLogQuery.error)
+      return(
+      <View style={styles.container}>
+        <Text>Pet not found Eroor</Text>
+      </View>
+    )
   }
+  if(queriesService.isLoading(queries))
+      return <ActivityIndicator style={styles.loader} />;
+
+  console.log("PET QUERY DATA")
+  console.log(petQuery.data)
+
+  const pet:Pet|null = {...(petQuery.data[0])||null,
+    "logs_weight":weightLogQuery.data || [],
+    "logs_bodycondition":healthLogQuery.data || [],
+    "logs_vet_visits":visitLogQuery.data || []
+  }
+
+  // useEffect(() => {
+  //   const fetchPet = async () => {
+  //     try {
+  //       // Simulate network delay
+  //       await new Promise(resolve => setTimeout(resolve, 1000));
+  //       setPet(mockPet);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchPet();
+  // }, [id]);
+;
+
+  // if (loading) {
+  //   return <ActivityIndicator style={styles.loader} />;
+  // }
+  // if (pet) {
+  //     setThisMonthLogs(getThisMonthLogs(pet.logs_bodycondition, pet.logs_weight));
+  //   }
 
   if (!pet) {
     return (

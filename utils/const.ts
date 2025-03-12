@@ -1,4 +1,4 @@
-import {Pet} from "./types"
+import {Pet} from "../types"
 
 export const globalMockPet: Pet = {
   id: '1',
@@ -23,3 +23,5 @@ export const globalMockPet: Pet = {
 
   ],
 };
+
+export const server_url = "http:192.168.1.8:8000"
