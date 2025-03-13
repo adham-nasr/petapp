@@ -2,16 +2,23 @@ import React, { Children } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { WeightLog } from '../types';
 import Table from '../components/Table';
+import Card from '../components/LogsCard';
+import { calculateTrend, sortByDate } from '../utils/helpers';
 
 const Logs = ({ data,logType,keyName,children }) => {
 
-    const logName = `${logType} Log`
-    const columnName = `${logType}`
-
+  const logName = `${logType} Log`
+  const columnName = `${logType}`
+  data = sortByDate(data)
+  
+  if(logType == 'Weight')
+    data = calculateTrend(data)
+    
+  console.log(data)
   return (
     <View style={styles.container}>
       <View style= {styles.dataView}>
-        <Table data={data} logName={logName} columnName={columnName} keyName={keyName} />
+        <Card data={data} logName={logName} columnName={columnName} keyName={keyName}/>
       </View>
       <View style={styles.buttonView}>
         {children}

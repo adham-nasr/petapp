@@ -31,7 +31,7 @@ const TabNavigator = () => {
         <Tab.Screen name="Weight History" component={WeightLogsScreen} options={{
         tabBarIcon: ({ focused, color, size }) => (
           <Ionicons
-            name={focused ? 'analytics' : 'analytics-outline'}
+            name={focused ? 'pulse' : 'pulse-outline'}
             size={size}
             color={"crimson"}
           />),
