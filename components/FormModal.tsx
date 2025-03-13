@@ -6,20 +6,25 @@ import DateTimePicker  from '@react-native-community/datetimepicker';
 import CustomButton from './CustomButton';
 import {useForm,Controller} from "react-hook-form"
 
-const FormModal = ({modalVisible,setModalVisible,inputProperties,postHandler}) => {
+const FormModal = ({modalVisible,setModalVisible,inputProperties,actionHandler , item=null}) => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const {label,rules} = inputProperties || {label:null,rules:null}
-  
+
+    const defaultValues = !item  ?  {
+      date: new Date(),
+      textField: '',
+    } : {
+      date: new Date(item.date),
+      textField: String(item.weight || item.notes || item.body_condition)
+    }
+
     const {
       control,
       handleSubmit,
       setValue,
       formState: { errors },
     } = useForm({
-      defaultValues: {
-        date: new Date(),
-        textField: '',
-      },
+      defaultValues: defaultValues,
     });
   
     const handleDateChange = (event, selectedDate) => {
@@ -31,7 +36,10 @@ const FormModal = ({modalVisible,setModalVisible,inputProperties,postHandler}) =
   
     const  onSubmit = async (data) => {
       console.log('Form Data:', data);
-      await postHandler(data)
+      if(!item)
+        await actionHandler(data)
+      else
+        await actionHandler(data,item!.id)
 
       setValue('textField','')
       setModalVisible(false); // Close the modal after submission
@@ -101,7 +109,7 @@ const FormModal = ({modalVisible,setModalVisible,inputProperties,postHandler}) =
             {/* Submit Button */}
             <CustomButton title="submit" pressHandler={handleSubmit(onSubmit)} />
             {/* Close Button */}
-            <CustomButton title="Close" pressHandler={() => (setValue('textField',''), setModalVisible(false))} />
+            <CustomButton title="Close" pressHandler={() => {setValue('textField',''); setModalVisible(false) } } />
 
           </View>
         </View>

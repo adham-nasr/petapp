@@ -18,12 +18,17 @@ export const healthLogService = {
     return createdBodyConditionLog;
   },
 
-  async updateBodyConditionLog(id: string, updates: Partial<BodyConditionLog>): Promise<BodyConditionLog> {
+  async updateBodyConditionLog({id, updates}:any): Promise<BodyConditionLog> {
     const updatedBodyConditionLog = await healthLogRepository.updateBodyConditionLog(id, updates);
+    if(!updatedBodyConditionLog)
+      throw Error
     return updatedBodyConditionLog;
   },
 
-  async deleteBodyConditionLog(id: string): Promise<void> {
-    await healthLogRepository.deleteBodyConditionLog(id);
+  async deleteBodyConditionLog(id: string): Promise<any> {
+    const response = await healthLogRepository.deleteBodyConditionLog(id);
+    if(!response.error)
+      return id
+    throw Error
   }
 };

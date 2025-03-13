@@ -6,14 +6,12 @@ import { supabase } from '../utils/supabase';
 
 export const weightLogRepository = {
   async getWeightLogs(): Promise<WeightLog[]> {
-    // Simulate API call delay
 
     const response = await supabase.from("weight_logs").select()
     return response.data||[];
   },
 
   async getWeightLogById(id: string): Promise<WeightLog | null> {
-    // Simulate API call delay
     const weightLogs:WeightLog[] = (await axios.get(url)).data
     const weightLog = weightLogs.find(p => p.id === id);
     return weightLog || null;
@@ -26,14 +24,17 @@ export const weightLogRepository = {
 
   },
 
-  async updateWeightLog(id: string, updates: Partial<WeightLog>): Promise<WeightLog> {
+  async updateWeightLog(id: string, updates: Partial<WeightLog>): Promise<any> {
 
-    const updatedWeightLog:WeightLog = (await axios.patch(url+"/"+id,updates)).data
-    return updatedWeightLog;
+    const response:any = await supabase.from('weight_logs').update(updates).eq('id',id).select();
+    if (response.data)
+      return response.data[0] || null
+    throw Error
   },
 
-  async deleteWeightLog(id: string): Promise<void> {
+  async deleteWeightLog(id: string): Promise<any> {
 
-    await axios.delete(url+"/"+id)
+    const response = await supabase.from('weight_logs').delete().eq('id',id)
+    return response
   }
 }; 

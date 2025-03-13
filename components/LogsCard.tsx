@@ -1,14 +1,19 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, FlatList,TouchableOpacity } from 'react-native';
 import { WeightLog } from '../types';
 import { formatDistanceToNow  } from 'date-fns';
 import Trend from './Trend';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import FormModal from './FormModal';
 
 
 
+const LogsCard = ( { keyName,item , inputProperties ,handlers } ) => {
 
-const LogsCard = ({ data , keyName , logName , columnName }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
     console.log(keyName)
+    const {patchHandler,deleteHandler} = handlers
 
     const dateDiff = (date) => {
         
@@ -16,29 +21,31 @@ const LogsCard = ({ data , keyName , logName , columnName }) => {
         console.log(d)
         return d
     }
-
   return (
     <View style={styles.container}>
-    
-    <Text style={styles.header}>{logName}</Text>
-        
-      {data.length>0 ? (
-        <FlatList data={data} renderItem={ ({item}) => 
-                <View style={styles.card}>
-                    <View style={styles.cardRow}>
-                      <View>
-                        <Text style={styles.cardHeader}>{item[keyName]}</Text>
-                        <Text style={styles.name}>{dateDiff(item.date)} ago</Text>
-                      </View>
-                      <View>
-                        { 'trend' in item && <Trend trend={item.trend}/>}
-                      </View>
-                    </View>
+      <View style={styles.card}>
+          <View style={styles.cardRow}>
+            <View>
+              <View style={styles.valueTrendView}>
+                <Text style={styles.cardHeader}>{item[keyName]}</Text>
+                <View style={{marginLeft:14}}>
+                  { 'trend' in item && <Trend trend={item.trend}/>}
                 </View>
-        }/>
-      ) : (
-        <Text style={styles.noData}>No logs available</Text>
-      )}
+              </View>
+              <Text >{dateDiff(item.date)} ago</Text>
+            </View>
+            
+            <View style={styles.iconButtons}>
+              <TouchableOpacity onPress={()=>{setModalVisible(true)}} style={{marginRight:20}}>
+                <Ionicons name="pencil" size={24} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={()=>{deleteHandler(item.id)}}>
+                <Ionicons name="trash" size={24} />
+              </TouchableOpacity>
+            </View>
+          </View>
+      </View>
+      {modalVisible && <FormModal modalVisible={modalVisible} setModalVisible={setModalVisible} inputProperties={inputProperties} actionHandler={patchHandler} item={item} />}
     </View>
   );
 };
@@ -80,6 +87,16 @@ const styles = StyleSheet.create({
     padding: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
+  },
+  iconButtons:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  valueTrendView:{
+    flexDirection: 'row',
   }
 
 });

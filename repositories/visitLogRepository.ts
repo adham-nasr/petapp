@@ -22,11 +22,14 @@ export const visitLogRepository = {
   },
 
   async updateVetVisitLog(id: string, updates: Partial<VetVisitLog>): Promise<VetVisitLog> {
-    const updatedVetVisitLog: VetVisitLog = (await axios.patch(url + "/" + id, updates)).data;
-    return updatedVetVisitLog;
+    const response:any = await supabase.from('vet_visit_logs').update(updates).eq('id',id).select();
+    if (response.data)
+      return response.data[0] || null
+    throw Error
   },
 
-  async deleteVetVisitLog(id: string): Promise<void> {
-    await axios.delete(url + "/" + id);
+  async deleteVetVisitLog(id: string): Promise<any> {
+    const response = await supabase.from('vet_visit_logs').delete().eq('id',id)
+    return response
   }
 };

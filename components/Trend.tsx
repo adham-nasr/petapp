@@ -3,17 +3,14 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-
-
-
 const Trend = ({ trend}) => {
     
   if (trend > 0)
-    return <Ionicons name="trending-up" size={32} color="green" />
+    return <Ionicons name="trending-up" size={26} color="green" />
   else if(trend < 0)
-    return <Ionicons name="trending-down" size={32} color="crimson" />
+    return <Ionicons name="trending-down" size={26} color="crimson" />
   else
-    return <Ionicons name="remove" size={32} color="black" />
+    return <Ionicons name="remove" size={26} color="black" />
 };
 
 const styles = StyleSheet.create({

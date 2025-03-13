@@ -26,7 +26,7 @@ const VisitLogsScreen = () => {
   
   const addVisitLog = useMutation({
     mutationFn: visitLogService.createVetVisitLog,
-    onSuccess: (visitLog)=>{ console.log(visitLog); queryClient.setQueryData(["visitLog"],(data:VetVisitLog[]) =>
+    onSuccess: (visitLog)=>{ queryClient.setQueryData(["visitLog"],(data:VetVisitLog[]) =>
       data
         ? [            
             ...data,
@@ -35,12 +35,40 @@ const VisitLogsScreen = () => {
         : visitLog)}
 
   })
+    const editVisitLog = useMutation({
+      mutationFn: visitLogService.updateVetVisitLog,
+      onSuccess: (visitLog)=>{ queryClient.setQueryData(["visitLog"],(data:Partial<VetVisitLog>[]) =>
+        
+        data.map((item) => item.id === visitLog.id ? visitLog : item)
+      )},
+      onError: (error) => {
+        throw Error
+      }
+    })
+    const deleteVisitLog = useMutation({
+      mutationFn: visitLogService.deleteVetVisitLog,
+      onSuccess: (id)=>{  queryClient.setQueryData(["visitLog"],(data:VetVisitLog[]) =>
+        data.filter((item) => item.id != id)
+      )}
+  
+    })
 
   const postHandler = async(data) => 
   {
       const date = (new Date(data.date)).toISOString()
       const response = await addVisitLog.mutate({date:date , notes:data.textField , pet_id:petQuery.data[0].id})
 
+  }
+  const patchHandler = async (data,id) =>
+  {
+   
+    const date = (new Date(data.date)).toISOString()
+    const response = await editVisitLog.mutate( { id:id , updates:{ date:date, notes:data.textField }}) 
+
+  }
+  const deleteHandler = (id) =>
+  {
+      const response =  deleteVisitLog.mutate(id)
   }
   
 
@@ -61,11 +89,15 @@ const VisitLogsScreen = () => {
     },
     label:"Notes"
   }
+  const handlers = {
+    patchHandler:patchHandler,
+    deleteHandler:deleteHandler
+  }
   
   return(
     <View style={styles.container}>
-      <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties} postHandler={postHandler}/>
-      <Logs keyName="notes" data={visitLogQuery.data} logType="Vet Visit">
+       <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties}  actionHandler={postHandler}/>
+        <Logs keyName="notes" data={visitLogQuery.data} logType="Vet Visit" inputProperties={inputProperties} handlers={handlers}>
         <Button title='Add' onPress={()=>{setModalVisible(true)}} />
       </Logs>
     </View>

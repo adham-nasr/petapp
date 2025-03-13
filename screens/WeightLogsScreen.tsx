@@ -37,7 +37,7 @@ const WeightLogsScreen = () => {
   
   const addWeightLog = useMutation({
     mutationFn: weightLogService.createWeightLog,
-    onSuccess: (weightLog)=>{ console.log(weightLog); queryClient.setQueryData(["weightLog"],(data:WeightLog[]) =>
+    onSuccess: (weightLog)=>{ queryClient.setQueryData(["weightLog"],(data:WeightLog[]) =>
       data
         ? [            
             ...data,
@@ -46,12 +46,40 @@ const WeightLogsScreen = () => {
         : weightLog)}
 
   })
+  const editWeightLog = useMutation({
+    mutationFn: weightLogService.updateWeightLog,
+    onSuccess: (weightLog)=>{ queryClient.setQueryData(["weightLog"],(data:Partial<WeightLog>[]) =>
+      
+      data.map((item) => item.id === weightLog.id ? weightLog : item)
+    )},
+    onError: (error) => {
+      throw Error
+    }
+  })
+  const deleteWeightLog = useMutation({
+    mutationFn: weightLogService.deleteWeightLog,
+    onSuccess: (id)=>{ queryClient.setQueryData(["weightLog"],(data:WeightLog[]) =>
+      data.filter((item) => item.id != id)
+    )}
+
+  })
 
   const postHandler = async(data) => 
   {
     const date = (new Date(data.date)).toISOString()
     const response = await addWeightLog.mutate({date:date, weight:data.textField , pet_id:petQuery.data[0].id})
 
+  }
+  const patchHandler = async (data,id) =>
+  {
+   
+    const date = (new Date(data.date)).toISOString()
+    const response = await editWeightLog.mutate( { id:id , updates:{ date:date, weight:data.textField }}) 
+
+  }
+  const deleteHandler = (id) =>
+  {
+      const response =  deleteWeightLog.mutate(id)
   }
 
   const inputProperties = {
@@ -62,11 +90,15 @@ const WeightLogsScreen = () => {
     },
     label:"Weight (kg)"
   }
+  const handlers = {
+    patchHandler:patchHandler,
+    deleteHandler:deleteHandler
+  }
   
   return(
     <View style={styles.container}>
-      <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties}  postHandler={postHandler}/>
-      <Logs keyName="weight" data={weightLogQuery.data} logType="Weight">
+      <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties}  actionHandler={postHandler}/>
+      <Logs keyName="weight" data={weightLogQuery.data} logType="Weight" inputProperties={inputProperties} handlers={handlers}>
         <Button title='Add' onPress={()=>{setModalVisible(true)}} />
       </Logs>
     </View>

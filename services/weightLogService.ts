@@ -21,13 +21,18 @@ export const weightLogService = {
     return created_weightLog;
   },
 
-  async updateWeightLog(id: string, updates: Partial<WeightLog>): Promise<WeightLog> {
+  async updateWeightLog({id, updates}:any): Promise<WeightLog> {
+
     const updated_weightLog = await weightLogRepository.updateWeightLog(id,updates);
+    if(!updated_weightLog)
+      throw Error
     return updated_weightLog;
   },
 
-  async deletePet(id: string): Promise<void> {
-    await weightLogRepository.deleteWeightLog(id);
-
+  async deleteWeightLog(id: string): Promise<any> {
+    const response = await weightLogRepository.deleteWeightLog(id);
+    if(!response.error)
+      return id
+    throw Error
   }
 }; 

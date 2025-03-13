@@ -25,11 +25,14 @@ export const healthLogRepository = {
   },
 
   async updateBodyConditionLog(id: string, updates: Partial<BodyConditionLog>): Promise<BodyConditionLog> {
-    const updatedBodyConditionLog: BodyConditionLog = (await axios.patch(url + "/" + id, updates)).data;
-    return updatedBodyConditionLog;
+    const response:any = await supabase.from('body_condition_logs').update(updates).eq('id',id).select();
+    if (response.data)
+      return response.data[0] || null
+    throw Error
   },
 
-  async deleteBodyConditionLog(id: string): Promise<void> {
-    await axios.delete(url + "/" + id);
+  async deleteBodyConditionLog(id: string): Promise<any> {
+    const response = await supabase.from('body_condition_logs').delete().eq('id',id)
+    return response
   }
 };

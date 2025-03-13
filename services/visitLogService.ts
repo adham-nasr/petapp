@@ -18,12 +18,17 @@ export const visitLogService = {
     return createdVetVisitLog;
   },
 
-  async updateVetVisitLog(id: string, updates: Partial<VetVisitLog>): Promise<VetVisitLog> {
+  async updateVetVisitLog({id, updates}:any): Promise<VetVisitLog> {
     const updatedVetVisitLog = await visitLogRepository.updateVetVisitLog(id, updates);
+    if(!updatedVetVisitLog)
+      throw Error
     return updatedVetVisitLog;
   },
 
-  async deleteVetVisitLog(id: string): Promise<void> {
-    await visitLogRepository.deleteVetVisitLog(id);
+  async deleteVetVisitLog(id: string): Promise<any> {
+    const response = await visitLogRepository.deleteVetVisitLog(id);
+    if(!response.error)
+      return id
+    throw Error
   }
 };

@@ -26,13 +26,30 @@ const HealthLogsScreen = () => {
   
   const addHealthLog = useMutation({
     mutationFn: healthLogService.createBodyConditionLog,
-    onSuccess: (healthLog)=>{ console.log(healthLog); queryClient.setQueryData(["healthLog"],(data:BodyConditionLog[]) =>
+    onSuccess: (healthLog)=>{ queryClient.setQueryData(["healthLog"],(data:BodyConditionLog[]) =>
       data
         ? [            
             ...data,
             healthLog,
           ]
         : healthLog)}
+
+  })
+  const editHealthLog = useMutation({
+    mutationFn: healthLogService.updateBodyConditionLog,
+    onSuccess: (healthLog)=>{  queryClient.setQueryData(["healthLog"],(data:Partial<BodyConditionLog>[]) =>
+      
+      data.map((item) => item.id === healthLog.id ? healthLog : item)
+    )},
+    onError: (error) => {
+      throw Error
+    }
+  })
+  const deleteHealthLog = useMutation({
+    mutationFn: healthLogService.deleteBodyConditionLog,
+    onSuccess: (id)=>{ queryClient.setQueryData(["healthLog"],(data:BodyConditionLog[]) =>
+      data.filter((item) => item.id != id)
+    )}
 
   })
 
@@ -42,7 +59,18 @@ const HealthLogsScreen = () => {
       const response = await addHealthLog.mutate({date:date , body_condition:data.textField , pet_id:petQuery.data[0].id})
 
   }
-  
+  const patchHandler = async (data,id) =>
+  {
+   
+    const date = (new Date(data.date)).toISOString()
+    const response = await editHealthLog.mutate( { id:id , updates:{ date:date, body_condition:data.textField }}) 
+
+  }
+  const deleteHandler = (id) =>
+  {
+      const response =  deleteHealthLog.mutate(id)
+  }
+
 
   if (healthLogQuery.isLoading) {
     return <Text>NONE</Text>;
@@ -61,11 +89,15 @@ const HealthLogsScreen = () => {
     },
     label:"Health"
   }
+  const handlers = {
+    patchHandler:patchHandler,
+    deleteHandler:deleteHandler
+  }
   
   return(
     <View style={styles.container}>
-      <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties = {inputProperties} postHandler={postHandler}/>
-      <Logs keyName="body_condition" data={healthLogQuery.data} logType="Health">
+      <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties}  actionHandler={postHandler}/>
+      <Logs keyName="body_condition" data={healthLogQuery.data} logType="Health" inputProperties={inputProperties} handlers={handlers}>
         <Button title='Add' onPress={()=>{setModalVisible(true)}} />
       </Logs>
     </View>

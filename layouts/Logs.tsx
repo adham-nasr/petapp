@@ -1,11 +1,12 @@
 import React, { Children } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,FlatList } from 'react-native';
 import { WeightLog } from '../types';
 import Table from '../components/Table';
 import Card from '../components/LogsCard';
 import { calculateTrend, sortByDate } from '../utils/helpers';
+import LogsCard from '../components/LogsCard';
 
-const Logs = ({ data,logType,keyName,children }) => {
+const Logs = ({ data,logType,keyName,children,inputProperties,handlers }) => {
 
   const logName = `${logType} Log`
   const columnName = `${logType}`
@@ -18,7 +19,13 @@ const Logs = ({ data,logType,keyName,children }) => {
   return (
     <View style={styles.container}>
       <View style= {styles.dataView}>
-        <Card data={data} logName={logName} columnName={columnName} keyName={keyName}/>
+        <Text style={styles.header}>{logName}</Text>
+          { data.length>0 ? (
+            <FlatList  removeClippedSubviews={false} data={data} renderItem={ ({item}) => <LogsCard keyName={keyName} item={item} inputProperties={inputProperties} handlers={handlers}/> }/>
+          ) : (
+            <Text style={styles.noData}>No logs available</Text>
+          )}
+        {/* <Card data={data} logName={logName} columnName={columnName} keyName={keyName}/> */}
       </View>
       <View style={styles.buttonView}>
         {children}
