@@ -10,9 +10,13 @@ export const visitLogRepository = {
   },
 
   async getVetVisitLogById(id: string): Promise<VetVisitLog | null> {
-    const vetVisitLogs: VetVisitLog[] = (await axios.get(url)).data;
-    const vetVisitLog = vetVisitLogs.find(p => p.id === id);
-    return vetVisitLog || null;
+    const {data,error} = await supabase.from("vet_visit_logs").select().eq("id",id).single()
+    if(error)
+    {
+      console.log("Error Fetching vet Logs : " , error)
+      return null
+    }
+    return data as VetVisitLog | null
   },
 
   async createVetVisitLog(vetVisitLog: Omit<VetVisitLog,'id'>): Promise<VetVisitLog> {

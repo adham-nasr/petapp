@@ -1,12 +1,19 @@
-import React, { Children } from 'react';
+import React, { Children ,PropsWithChildren } from 'react';
 import { View, Text, StyleSheet,FlatList } from 'react-native';
-import { WeightLog } from '../types';
-import Table from '../components/Table';
+import { WeightLog , BodyConditionLog, VetVisitLog ,formData, handlersTypes, inputTypes,logTypes} from '../types';
 import Card from '../components/LogsCard';
 import { calculateTrend, sortByDate } from '../utils/helpers';
 import LogsCard from '../components/LogsCard';
 
-const Logs = ({ data,logType,keyName,children,inputProperties,handlers }) => {
+type logsProps =  PropsWithChildren<{
+  data: (WeightLog|BodyConditionLog|VetVisitLog)[];
+  logType : string;
+  keyName : string;
+  inputProperties: inputTypes
+  handlers: handlersTypes
+}>
+
+const Logs = ({ data,logType,keyName,children,inputProperties,handlers }:logsProps) => {
 
   const logName = `${logType} Log`
   const columnName = `${logType}`
@@ -21,7 +28,7 @@ const Logs = ({ data,logType,keyName,children,inputProperties,handlers }) => {
       <View style= {styles.dataView}>
         <Text style={styles.header}>{logName}</Text>
           { data.length>0 ? (
-            <FlatList  removeClippedSubviews={false} data={data} renderItem={ ({item}) => <LogsCard keyName={keyName} item={item} inputProperties={inputProperties} handlers={handlers}/> }/>
+            <FlatList  removeClippedSubviews={false} data={data} renderItem={ ( {item} ) => <LogsCard keyName={keyName} item={item} inputProperties={inputProperties} handlers={handlers}/> }/>
           ) : (
             <Text style={styles.noData}>No logs available</Text>
           )}

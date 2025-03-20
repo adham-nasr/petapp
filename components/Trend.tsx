@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const Trend = ({ trend}) => {
+const Trend = ({ trend}:{ trend:number } ) => {
     
   if (trend > 0)
     return <Ionicons name="trending-up" size={26} color="green" />

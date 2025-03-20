@@ -1,21 +1,27 @@
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import { View, Text, StyleSheet, FlatList,TouchableOpacity } from 'react-native';
-import { WeightLog } from '../types';
+import { handlersTypes, inputTypes, logTypes, WeightLog } from '../types';
 import { formatDistanceToNow  } from 'date-fns';
 import Trend from './Trend';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import FormModal from './FormModal';
 
+type logsCardProps =  PropsWithChildren<{
+  item: logTypes;
+  keyName : string;
+  inputProperties: inputTypes
+  handlers: handlersTypes
+}>
 
 
-const LogsCard = ( { keyName,item , inputProperties ,handlers } ) => {
+const LogsCard = ( { keyName,item , inputProperties ,handlers } : logsCardProps) => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
     console.log(keyName)
     const {patchHandler,deleteHandler} = handlers
 
-    const dateDiff = (date) => {
+    const dateDiff = (date:string) => {
         
         let d = formatDistanceToNow(new Date(date))
         console.log(d)

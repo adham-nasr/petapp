@@ -10,8 +10,8 @@ export const weightLogService = {
 
   async getWeightLogById(id: string): Promise<WeightLog | null> {
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
     const weightLog = await weightLogRepository.getWeightLogById(id);
+
     return weightLog;
   },
 

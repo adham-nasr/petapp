@@ -7,9 +7,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Pet, BodyConditionLog, WeightLog } from '../types';
+import { Pet, BodyConditionLog, WeightLog, PurePet } from '../types';
 import  WeightLogsScreen  from './WeightLogsScreen'
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, UseQueryResult } from '@tanstack/react-query';
 import { petService } from "../services/petService"
 import { weightLogService } from "../services/weightLogService"
 import { visitLogService } from '../services/visitLogService';
@@ -115,11 +115,11 @@ export const SingleProfileScreen = () => {
     staleTime : Infinity
   })
 
-  const queries = [petQuery , weightLogQuery , visitLogQuery , healthLogQuery]
+  const queries:UseQueryResult[] = [petQuery , weightLogQuery , visitLogQuery , healthLogQuery]
 
   useEffect(() => {
     if (pet) {
-      setThisMonthLogs(getThisMonthLogs(pet.logs_bodycondition, pet.logs_weight));
+      setThisMonthLogs(getThisMonthLogs(pet.logs_bodycondition!, pet.logs_weight!));
     }
   }, [petQuery.data])
 
@@ -137,7 +137,11 @@ export const SingleProfileScreen = () => {
   console.log("PET QUERY DATA")
   console.log(petQuery.data)
 
-  const pet:Pet|null = {...(petQuery.data[0])||null,
+  const petData:PurePet |null = petQuery.data && petQuery.data.length>0 ? petQuery.data[0] : null 
+
+  let pet:Pet|null = null;
+  if(petData)
+    pet = {...petData|| {},
     "logs_weight":weightLogQuery.data || [],
     "logs_bodycondition":healthLogQuery.data || [],
     "logs_vet_visits":visitLogQuery.data || []

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {View,Text,StyleSheet,ActivityIndicator, Button} from 'react-native';
-import { Pet, BodyConditionLog, WeightLog } from '../types';
+import { Pet, BodyConditionLog, WeightLog,formData } from '../types';
 import Logs from "../layouts/Logs"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { weightLogService } from '../services/weightLogService';
@@ -64,20 +64,20 @@ const WeightLogsScreen = () => {
 
   })
 
-  const postHandler = async(data) => 
+  const postHandler = async(data:formData) => 
   {
     const date = (new Date(data.date)).toISOString()
-    const response = await addWeightLog.mutate({date:date, weight:data.textField , pet_id:petQuery.data[0].id})
+    const response = await addWeightLog.mutate({date:date, weight:data.textField , pet_id:petQuery.data![0].id})
 
   }
-  const patchHandler = async (data,id) =>
+  const patchHandler = async (data:formData,id:string) =>
   {
    
     const date = (new Date(data.date)).toISOString()
     const response = await editWeightLog.mutate( { id:id , updates:{ date:date, weight:data.textField }}) 
 
   }
-  const deleteHandler = (id) =>
+  const deleteHandler = (id:string) =>
   {
       const response =  deleteWeightLog.mutate(id)
   }
@@ -90,7 +90,10 @@ const WeightLogsScreen = () => {
     },
     label:"Weight (kg)"
   }
-  const handlers = {
+  const handlers:{
+    patchHandler:(data:formData,id:string) => Promise<void>;
+    deleteHandler:(id:string) => void
+  } = {
     patchHandler:patchHandler,
     deleteHandler:deleteHandler
   }
@@ -98,7 +101,7 @@ const WeightLogsScreen = () => {
   return(
     <View style={styles.container}>
       <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties}  actionHandler={postHandler}/>
-      <Logs keyName="weight" data={weightLogQuery.data} logType="Weight" inputProperties={inputProperties} handlers={handlers}>
+      <Logs keyName="weight" data={weightLogQuery.data!} logType="Weight" inputProperties={inputProperties} handlers={handlers}>
         <Button title='Add' onPress={()=>{setModalVisible(true)}} />
       </Logs>
     </View>

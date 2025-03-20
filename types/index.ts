@@ -36,7 +36,7 @@ export interface BodyConditionLog {
   pet_id: string;
 }
 
-export type LogType = 'weight' | 'body' | 'vet' | any;
+export type LogTypeNames = 'weight' | 'body' | 'vet' | any;
 
 export interface VetVisitLog {
   id: string;
@@ -44,3 +44,33 @@ export interface VetVisitLog {
   notes: string | null;
   date: string;
 } 
+
+export type formData = {
+  date: string;
+  textField: string;
+}
+
+export type inputTypes = {
+  rules:{
+    required:string,
+    maxLength?: { value:number , message:string},
+    pattern?: { value:RegExp , message:string}
+  },
+  label:string
+};
+
+export type handlersTypes = {
+
+  patchHandler:patchHandlerType
+  deleteHandler:deleteHandlerType
+
+}
+
+export type patchHandlerType = (data:formData,id:string) => Promise<void>
+
+export type deleteHandlerType = (id:string) => void
+
+
+export type logTypes = (BodyConditionLog|VetVisitLog|WeightLog) & ind
+
+type ind =  {[key: string]: any};

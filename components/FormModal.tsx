@@ -5,8 +5,17 @@ import { Modal, View, Text, TextInput, Button, StyleSheet, TouchableOpacity } fr
 import DateTimePicker  from '@react-native-community/datetimepicker';
 import CustomButton from './CustomButton';
 import {useForm,Controller} from "react-hook-form"
+import { deleteHandlerType, handlersTypes, inputTypes, logTypes, patchHandlerType,formData } from '../types';
 
-const FormModal = ({modalVisible,setModalVisible,inputProperties,actionHandler , item=null}) => {
+type formModalProps = {
+  inputProperties: inputTypes;
+  actionHandler: patchHandlerType|deleteHandlerType;
+  modalVisible: boolean;
+  setModalVisible:any
+  item?:logTypes|null
+}
+
+const FormModal = ({modalVisible,setModalVisible,inputProperties,actionHandler , item=null}:formModalProps) => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const {label,rules} = inputProperties || {label:null,rules:null}
 
@@ -27,19 +36,16 @@ const FormModal = ({modalVisible,setModalVisible,inputProperties,actionHandler ,
       defaultValues: defaultValues,
     });
   
-    const handleDateChange = (event, selectedDate) => {
+    const handleDateChange = (event:any, selectedDate:Date) => {
       setShowDatePicker(false); // Hide the date picker after selection
       if (selectedDate) {
         setValue('date', selectedDate); // Update the form value
       }
     };
   
-    const  onSubmit = async (data) => {
+    const  onSubmit = async (data:formData) => {
       console.log('Form Data:', data);
-      if(!item)
-        await actionHandler(data)
-      else
-        await actionHandler(data,item!.id)
+      await actionHandler(data,item!.id)
 
       setValue('textField','')
       setModalVisible(false); // Close the modal after submission

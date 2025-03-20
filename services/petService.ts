@@ -2,7 +2,7 @@ import { Pet,PurePet } from '../types';
 import { petRepository } from '../repositories/petRepository';
 
 export const petService = {
-  async getPets(): Promise<Pet[]> {
+  async getPets(): Promise<Pet[]|null> {
 
     const pets = await petRepository.getPets();
     return pets;
@@ -10,8 +10,10 @@ export const petService = {
 
   async getPetById(id: string): Promise<Pet | null> {
 
-    const pet = await petRepository.getPetById(id);
-    return pet
+    const pets = await petRepository.getPetById(id);
+    if(!pets)
+      return null
+    return pets[0]
   },
 
   async createPet(pet: Omit<Pet, 'id' | 'created_at'>): Promise<Pet> {
@@ -20,15 +22,15 @@ export const petService = {
     return created_pet;
   },
 
-  async updatePet(id: string, updates: Partial<Pet>): Promise<Pet> {
+  // async updatePet(id: string, updates: Partial<Pet>): Promise<Pet> {
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const updated_pet = await petRepository.updatePet(id,updates);
-    return updated_pet
-  },
+  //   await new Promise(resolve => setTimeout(resolve, 1000));
+  //   const updated_pet = await petRepository.updatePet(id,updates);
+  //   return updated_pet
+  // },
 
-  async deletePet(id: string): Promise<void> {
+  // async deletePet(id: string): Promise<void> {
 
-    await petRepository.deletePet(id);
-  }
+  //   await petRepository.deletePet(id);
+  // }
 }; 

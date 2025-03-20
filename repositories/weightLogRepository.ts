@@ -12,9 +12,18 @@ export const weightLogRepository = {
   },
 
   async getWeightLogById(id: string): Promise<WeightLog | null> {
-    const weightLogs:WeightLog[] = (await axios.get(url)).data
-    const weightLog = weightLogs.find(p => p.id === id);
-    return weightLog || null;
+
+    const {data , error } = await supabase.from("weight_logs").select().eq('id',id).single()
+
+    if(error){
+      console.log("Error fetching weight Log : ", error)
+      return null
+    }
+    return data as WeightLog | null;
+
+    // const weightLogs:WeightLog[] | null = (await  supabase.from("weight_logs").select().eq('id',id)).data
+    // // const weightLog = weightLogs.find(p => p.id === id);
+    // return weightLogs;
   },
 
   async createWeightLog(weightLog: Omit<WeightLog,'id'>): Promise<WeightLog> {

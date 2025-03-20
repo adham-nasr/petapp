@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View,Text,StyleSheet, Button} from 'react-native';
-import { Pet, VetVisitLog } from '../types';
+import { Pet, VetVisitLog,formData } from '../types';
 import Logs from "../layouts/Logs"
 import { visitLogService } from '../services/visitLogService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -53,20 +53,20 @@ const VisitLogsScreen = () => {
   
     })
 
-  const postHandler = async(data) => 
+  const postHandler = async(data:formData) => 
   {
       const date = (new Date(data.date)).toISOString()
-      const response = await addVisitLog.mutate({date:date , notes:data.textField , pet_id:petQuery.data[0].id})
+      const response = await addVisitLog.mutate({date:date , notes:data.textField , pet_id:petQuery.data![0].id})
 
   }
-  const patchHandler = async (data,id) =>
+  const patchHandler = async (data:formData,id:string) =>
   {
    
     const date = (new Date(data.date)).toISOString()
     const response = await editVisitLog.mutate( { id:id , updates:{ date:date, notes:data.textField }}) 
 
   }
-  const deleteHandler = (id) =>
+  const deleteHandler = (id:string) =>
   {
       const response =  deleteVisitLog.mutate(id)
   }
@@ -97,7 +97,7 @@ const VisitLogsScreen = () => {
   return(
     <View style={styles.container}>
        <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties}  actionHandler={postHandler}/>
-        <Logs keyName="notes" data={visitLogQuery.data} logType="Vet Visit" inputProperties={inputProperties} handlers={handlers}>
+        <Logs keyName="notes" data={visitLogQuery.data!} logType="Vet Visit" inputProperties={inputProperties} handlers={handlers}>
         <Button title='Add' onPress={()=>{setModalVisible(true)}} />
       </Logs>
     </View>

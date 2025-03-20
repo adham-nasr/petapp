@@ -12,9 +12,15 @@ export const healthLogRepository = {
   },
 
   async getBodyConditionLogById(id: string): Promise<BodyConditionLog | null> {
-    const bodyConditionLogs: BodyConditionLog[] = (await axios.get(url)).data;
-    const bodyConditionLog = bodyConditionLogs.find(p => p.id === id);
-    return bodyConditionLog || null;
+    
+    const {data,error} = await supabase.from("body_condition_logs").select().eq("id",id).single()
+    if(error)
+    {
+      console.log("Error Fetching Health Logs : " , error)
+      return null
+    }
+    return data as BodyConditionLog | null
+
   },
 
   async createBodyConditionLog(bodyConditionLog: Omit<BodyConditionLog,'id'>): Promise<BodyConditionLog> {

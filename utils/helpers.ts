@@ -1,4 +1,6 @@
-export const sortByDate = (data) => {
+import { logTypes } from "@/types";
+
+export const sortByDate = (data:logTypes[]) => {
     data.sort(
         (a,b) => 
           {
@@ -8,7 +10,7 @@ export const sortByDate = (data) => {
           });
     return data
 }
-export const calculateTrend = (data) => {
+export const calculateTrend = (data:logTypes[]) => {
 
     let newData = []
     

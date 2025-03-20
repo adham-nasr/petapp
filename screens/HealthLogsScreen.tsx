@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {View,Text,StyleSheet,ScrollView,ActivityIndicator, Button} from 'react-native';
-import { Pet, BodyConditionLog, WeightLog,VetVisitLog } from '../types';
+import { Pet, BodyConditionLog, WeightLog,VetVisitLog ,formData} from '../types';
 import Logs from "../layouts/Logs"
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { healthLogService } from '@/services/healthLogService';
@@ -53,20 +53,20 @@ const HealthLogsScreen = () => {
 
   })
 
-  const postHandler = async(data) => 
+  const postHandler = async(data:formData) => 
   {
       const date = (new Date(data.date)).toISOString()
-      const response = await addHealthLog.mutate({date:date , body_condition:data.textField , pet_id:petQuery.data[0].id})
+      const response = await addHealthLog.mutate({date:date , body_condition:data.textField , pet_id:petQuery.data![0].id})
 
   }
-  const patchHandler = async (data,id) =>
+  const patchHandler = async (data:formData,id:string) =>
   {
    
     const date = (new Date(data.date)).toISOString()
     const response = await editHealthLog.mutate( { id:id , updates:{ date:date, body_condition:data.textField }}) 
 
   }
-  const deleteHandler = (id) =>
+  const deleteHandler = (id:string) =>
   {
       const response =  deleteHealthLog.mutate(id)
   }
@@ -97,7 +97,7 @@ const HealthLogsScreen = () => {
   return(
     <View style={styles.container}>
       <FormModal modalVisible={modalVisible}  setModalVisible={setModalVisible} inputProperties={inputProperties}  actionHandler={postHandler}/>
-      <Logs keyName="body_condition" data={healthLogQuery.data} logType="Health" inputProperties={inputProperties} handlers={handlers}>
+      <Logs keyName="body_condition" data={healthLogQuery.data!} logType="Health" inputProperties={inputProperties} handlers={handlers}>
         <Button title='Add' onPress={()=>{setModalVisible(true)}} />
       </Logs>
     </View>
